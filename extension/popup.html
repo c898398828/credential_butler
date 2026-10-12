@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>凭据管家</title>
+    <link rel="stylesheet" href="popup.css">
+    <script src="common.js" defer></script>
+    <script src="vault.js" defer></script>
+    <script src="sites.js" defer></script>
+    <script src="popup.js" defer></script>
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true">
+      <span class="orb orb-a"></span><span class="orb orb-b"></span><span class="orb orb-c"></span>
+    </div>
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="icon-key" viewBox="0 0 24 24"><circle cx="8" cy="8" r="4.5"/><path d="m11.3 11.3 9.2 9.2M16 16l2.5-2.5M18.5 18.5 21 16"/></symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></symbol>
+      <symbol id="icon-tools" viewBox="0 0 24 24"><path d="M5 4v16M12 4v16M19 4v16M3 8h4M10 16h4M17 10h4"/></symbol>
+      <symbol id="icon-back" viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></symbol>
+      <symbol id="icon-add" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="icon-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+      <symbol id="icon-open" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6L10 14M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l4-1L20 7a2.8 2.8 0 0 0-4-4L4 15v5Z"/></symbol>
+      <symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/></symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></symbol>
+      <symbol id="icon-spark" viewBox="0 0 24 24"><path d="m12 3 2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6L12 3Z"/></symbol>
+      <symbol id="icon-backup" viewBox="0 0 24 24"><path d="M5 9V4h14v5M4 9h16v11H4zM9 13h6"/></symbol>
+      <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 5 7 7-7 7"/></symbol>
+    </svg>
+
+    <div class="app-shell" id="app-shell">
+      <header class="app-header">
+        <div class="brand-mark" id="brand-mark" aria-hidden="true"><svg class="icon"><use href="#icon-key"/></svg></div>
+        <button id="back-button" class="icon-button back-button" type="button" aria-label="返回账号列表" hidden><svg class="icon" aria-hidden="true"><use href="#icon-back"/></svg></button>
+        <div class="header-text"><h1 id="view-title">凭据管家</h1><p id="view-subtitle" class="domain">多站点账号管理</p></div>
+        <button id="tools-button" class="quiet-button tools-button" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#icon-tools"/></svg>工具</button>
+      </header>
+
+      <main id="home-view" class="view home-view" aria-labelledby="view-title">
+        <div class="home-toolbar">
+          <div class="site-context" id="site-context" data-state="loading"><span class="site-dot" aria-hidden="true"></span><span id="site-label">正在识别当前页面…</span><a id="open-login" href="#" target="_blank" rel="noopener noreferrer" hidden>打开登录页 <span aria-hidden="true">↗</span></a><button id="grant-site-button" class="text-button accent-text" type="button" hidden>允许此网站</button></div>
+          <div class="search-box"><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg><label class="visually-hidden" for="account-search">搜索名称、网站、企业编号或账号</label><input id="account-search" type="search" placeholder="搜索账号或网站" autocomplete="off" spellcheck="false" disabled></div>
+          <div class="scope-controls" role="group" aria-label="账号范围"><button id="filter-current" class="scope-chip" type="button" aria-pressed="true" disabled>当前网站</button><button id="filter-all" class="scope-chip" type="button" aria-pressed="false" disabled>全部账号</button></div>
+          <div class="section-heading"><h2>账号 <span id="account-count" class="count">0</span></h2><button id="add-button" class="text-button accent-text" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#icon-add"/></svg>添加账号</button></div>
+        </div>
+        <div id="account-list" class="account-list" aria-label="已保存账号"></div>
+        <footer class="home-footer">
+          <label class="switch-control" for="enabled"><span>自动填写默认账号</span><input id="enabled" type="checkbox" role="switch" aria-describedby="autofill-hint" disabled><span class="switch-track" aria-hidden="true"></span></label>
+          <p id="autofill-hint" class="footer-hint">请选择默认账号以自动填写</p>
+          <button id="fill-button" class="button button-primary fill-button" type="button" disabled><span id="fill-label">填写当前页面</span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+        </footer>
+      </main>
+
+      <form id="editor-view" class="view editor-view" autocomplete="off" novalidate aria-labelledby="view-title" hidden>
+        <fieldset id="editor-fields" class="editor-fields scroll-area" disabled>
+          <legend class="visually-hidden">账号信息</legend>
+          <div class="field"><label for="profile-name">名称 <span class="optional">选填</span></label><input id="profile-name" name="name" type="text" maxlength="40" placeholder="方便区分不同账号" autocomplete="off" aria-describedby="profile-name-error"><p id="profile-name-error" class="field-error" hidden></p></div>
+          <div class="field"><label for="login-url">登录页地址</label><input id="login-url" name="loginUrl" class="mono-input" type="url" placeholder="https://网站地址/login" autocomplete="off" spellcheck="false" required aria-describedby="login-url-error"><p id="login-url-error" class="field-error" hidden></p></div>
+          <div class="field"><label for="enterprise-id">企业编号 / 组织 <span id="enterprise-optional" class="optional">选填</span></label><input id="enterprise-id" name="enterpriseId" class="mono-input" type="text" placeholder="网站需要时填写" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="enterprise-id-error"><p id="enterprise-id-error" class="field-error" hidden></p></div>
+          <div class="field"><label for="username">账号</label><input id="username" name="username" class="mono-input" type="text" placeholder="请输入账号" autocomplete="off" autocapitalize="off" spellcheck="false" required aria-describedby="username-error"><p id="username-error" class="field-error" hidden></p></div>
+          <div class="field"><label for="password">密码</label><div class="password-control"><input id="password" name="password" class="mono-input" type="password" placeholder="请输入登录密码" autocomplete="off" spellcheck="false" required aria-describedby="password-error"><button id="toggle-password" class="reveal-button" type="button" aria-controls="password" aria-label="显示密码" aria-pressed="false">显示</button></div><p id="password-error" class="field-error" hidden></p></div>
+          <label class="checkbox-control default-control" for="make-default"><input id="make-default" type="checkbox"><span>设为此网站的默认账号</span></label><p class="helper-text">每个网站独立设置，打开登录页时自动填写。</p>
+          <details id="selector-options" class="selector-options">
+            <summary>高级：字段匹配<svg class="icon disclosure-icon" aria-hidden="true"><use href="#icon-chevron"/></svg></summary>
+            <p class="helper-text">通常无需填写；自动识别失败时设置。</p>
+            <div class="field"><label for="selector-enterprise">企业 / 组织字段</label><input id="selector-enterprise" class="mono-input" type="text" maxlength="256" placeholder="input[name=&quot;enterpriseId&quot;]" autocomplete="off" spellcheck="false" aria-describedby="selector-enterprise-error"><p id="selector-enterprise-error" class="field-error" hidden></p></div>
+            <div class="field"><label for="selector-username">账号字段</label><input id="selector-username" class="mono-input" type="text" maxlength="256" placeholder="input[name=&quot;username&quot;]" autocomplete="off" spellcheck="false" aria-describedby="selector-username-error"><p id="selector-username-error" class="field-error" hidden></p></div>
+            <div class="field"><label for="selector-password">密码字段</label><input id="selector-password" class="mono-input" type="text" maxlength="256" placeholder="input[type=&quot;password&quot;]" autocomplete="off" spellcheck="false" aria-describedby="selector-password-error"><p id="selector-password-error" class="field-error" hidden></p></div>
+          </details>
+        </fieldset>
+        <div class="editor-footer"><button id="save-button" class="button button-primary" type="submit">保存账号</button></div>
+      </form>
+
+      <main id="tools-view" class="view tools-view scroll-area" aria-labelledby="view-title" hidden>
+        <details class="tool-card" id="generator-section" open>
+          <summary><span class="tool-icon"><svg class="icon" aria-hidden="true"><use href="#icon-spark"/></svg></span><span class="tool-heading">密码生成<span>按需生成新密码</span></span><svg class="icon disclosure-icon" aria-hidden="true"><use href="#icon-chevron"/></svg></summary>
+          <div class="tool-content">
+            <div class="generator-options"><label class="length-control" for="password-length">长度<select id="password-length"><option value="16">16 位</option><option value="20" selected>20 位</option><option value="24">24 位</option><option value="32">32 位</option></select></label><label class="checkbox-control" for="include-symbols"><input id="include-symbols" type="checkbox" checked><span>包含符号</span></label></div>
+            <label class="visually-hidden" for="generated-password">生成的密码</label><input id="generated-password" class="generated-password mono-input" type="text" placeholder="点击下方生成密码" readonly autocomplete="off" spellcheck="false">
+            <div class="button-row"><button id="generate-button" class="button button-secondary" type="button">生成密码</button><button id="copy-generated" class="button button-secondary" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#icon-copy"/></svg>复制</button></div><p class="helper-text">仅生成密码，不修改网站密码。</p>
+          </div>
+        </details>
+        <details class="tool-card" id="backup-section">
+          <summary><span class="tool-icon"><svg class="icon" aria-hidden="true"><use href="#icon-backup"/></svg></span><span class="tool-heading">加密备份<span>导入或导出账号</span></span><svg class="icon disclosure-icon" aria-hidden="true"><use href="#icon-chevron"/></svg></summary>
+          <div class="tool-content">
+            <div class="field"><label for="backup-passphrase">备份口令</label><div class="password-control"><input id="backup-passphrase" type="password" minlength="8" placeholder="至少 8 个字符" autocomplete="off" spellcheck="false" aria-describedby="backup-help"><button id="toggle-passphrase" class="reveal-button" type="button" aria-label="显示备份口令" aria-controls="backup-passphrase" aria-pressed="false">显示</button></div></div>
+            <p id="backup-help" class="helper-text">导入时需要同一口令；仅合并，不覆盖已有账号。</p>
+            <div class="button-row"><button id="export-backup" class="button button-secondary" type="button">导出备份</button><button id="import-backup" class="button button-secondary" type="button">选择文件导入</button></div><input id="backup-file" class="visually-hidden" type="file" accept=".json,application/json" tabindex="-1" aria-label="选择加密备份文件">
+          </div>
+        </details>
+        <details class="tool-card danger-section" id="clear-section">
+          <summary><span class="tool-icon"><svg class="icon" aria-hidden="true"><use href="#icon-trash"/></svg></span><span class="tool-heading">清空账号<span>删除本机保存的数据</span></span><svg class="icon disclosure-icon" aria-hidden="true"><use href="#icon-chevron"/></svg></summary>
+          <div class="tool-content"><p class="helper-text clear-note">清空后将关闭自动填写。</p><button id="clear-button" class="button button-outline-danger" type="button">清空所有账号</button><section id="clear-confirmation" class="inline-confirmation" aria-labelledby="clear-title" hidden><p id="clear-title">清空所有账号？此操作无法撤销。</p><div class="button-row"><button id="cancel-clear" class="button button-secondary" type="button">取消</button><button id="confirm-clear" class="button button-danger" type="button">确认清空</button></div></section></div>
+        </details>
+        <p class="tools-note">账号保存在当前浏览器，不自动同步。<br>备份口令只用于加密文件，不会被保存。</p>
+      </main>
+      <p id="app-status" class="app-status" role="status" aria-live="polite" aria-atomic="true">正在读取本地账号…</p>
+    </div>
+    <div id="account-menu" class="account-menu" role="menu" aria-label="账号操作" hidden></div>
+    <dialog id="confirmation-dialog" class="confirmation-dialog" aria-labelledby="confirmation-title" aria-describedby="confirmation-description"><h2 id="confirmation-title"></h2><p id="confirmation-description"></p><div class="button-row"><button id="dialog-cancel" class="button button-secondary" type="button" autofocus>取消</button><button id="dialog-confirm" class="button button-danger" type="button">确认</button></div></dialog>
+  </body>
+</html>

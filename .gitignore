@@ -1,0 +1,12 @@
+node_modules/
+.test-browser/
+test-results/
+*.log
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+
