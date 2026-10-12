@@ -1,4 +1,4 @@
-# 凭据管家 · 多站点自动填充 2.0
+<img width="1277" height="676" alt="image" src="https://github.com/user-attachments/assets/4a7df23d-307d-4698-8204-3241cdefc541" /># 凭据管家 · 多站点自动填充 2.0
 
 按网站保存多组账号，打开对应登录页时填写默认账号、密码和可选的企业编号。支持搜索、快捷复制、自定义字段、密码生成和加密备份。代码与安装包不包含预置账号或密码。
 
@@ -19,6 +19,9 @@
 **不要先删除扩展，也不要换目录重新安装**，以免原扩展的本地数据丢失或无法沿用。升级后名称和界面会变为“凭据管家”。
 
 ## 日常使用
+<img width="1277" height="676" alt="image" src="https://github.com/user-attachments/assets/7c1c1161-f524-4200-a57d-38280a587376" />
+<img width="1298" height="684" alt="image" src="https://github.com/user-attachments/assets/c67222f6-e6a6-4f22-a019-0f8c6efee1ac" />
+
 
 - **当前网站 / 全部账号**：切换列表范围；可按名称、网站、企业编号或账号搜索。
 - **选择账号 → 填写当前页面**：手动填入选中的整组信息，可替换页面已有内容；临时选择不会改变默认账号。
